@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja Online</title>
+
+  <!-- Firebase CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, setDoc, arrayUnion, doc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+        authDomain: "drena-store.firebaseapp.com",
+        projectId: "drena-store",
+        storageBucket: "drena-store.firebasestorage.app",
+        messagingSenderId: "108887454441",
+        appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+        measurementId: "G-5Q5VQM4ELC"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Função para cadastrar usuário
+    window.cadastrarUsuario = async function (email, senha) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+        alert("Usuário cadastrado com sucesso!");
+      } catch (error) {
+        console.error("Erro no cadastro: ", error);
+        alert("Erro ao cadastrar usuário");
+      }
+    };
+
+    // Função para login
+    window.loginUsuario = async function (email, senha) {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+        alert("Login realizado com sucesso!");
+        buscarProdutos(); // Carregar produtos após login
+      } catch (error) {
+        console.error("Erro no login: ", error);
+        alert("Erro ao fazer login");
+      }
+    };
+
+    // Função para buscar os produtos
+    window.buscarProdutos = async function () {
+      const querySnapshot = await getDocs(collection(db, "produtos"));
+      document.getElementById('produtos').innerHTML = ""; // Limpa a lista antes de exibir
+
+      querySnapshot.forEach((doc) => {
+        const produto = doc.data();
+        const produtoDiv = document.createElement('div');
+        produtoDiv.classList.add('produto');
+
+        produtoDiv.innerHTML = `
+          <h3>${produto.nome}</h3>
+          <img src="${produto.imagem}" alt="${produto.nome}" />
+          <p>Preço: ${produto.preco}€</p>
+          <p>Descrição: ${produto.descricao}</p>
+          <p>Cor: ${produto.cor}</p>
+          <p>Tamanho: ${produto.tamanho}</p>
+          <button onclick="adicionarCarrinho('${produto.nome}', '${produto.preco}', '${produto.descricao}', '${produto.imagem}', '${produto.cor}', '${produto.tamanho}')">Adicionar ao Carrinho</button>
+        `;
+
+        document.getElementById('produtos').appendChild(produtoDiv);
+      });
+
+      // Adicionar o botão "Carrinho" após os produtos
+      const carrinhoButton = document.createElement('button');
+      carrinhoButton.textContent = "Ir para o Carrinho";
+      carrinhoButton.onclick = () => {
+        window.location.href = "testecarrinho.html"; // Redireciona para a página do carrinho
+      };
+      document.getElementById('produtos').appendChild(carrinhoButton);
+    };
+
+    // Função para adicionar produto ao carrinho
+    window.adicionarCarrinho = async function (nome, preco, descricao, imagem, cor, tamanho) {
+      const user = auth.currentUser;
+
+      if (user) {
+        const carrinhoRef = doc(db, "carrinhos", user.uid);
+        try {
+          await setDoc(carrinhoRef, {
+            produtos: arrayUnion({
+              nome,
+              preco,
+              descricao,
+              imagem,
+              cor,
+              tamanho,
+              quantidade: 1
+            }),
+          }, { merge: true });
+
+          alert("Produto adicionado ao carrinho!");
+        } catch (error) {
+          console.error("Erro ao adicionar ao carrinho:", error);
+          alert("Erro ao adicionar o produto ao carrinho.");
+        }
+      } else {
+        alert("Você precisa estar logado para adicionar ao carrinho.");
+      }
+    };
+  </script>
+</head>
+<body>
+  <h1>Loja Online</h1>
+
+  <div id="produtos">
+    <!-- Produtos serão listados aqui -->
+  </div>
+
+  <!-- Inputs para login -->
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="senha" placeholder="Senha" />
+
+  <button onclick="loginUsuario(document.getElementById('email').value, document.getElementById('senha').value)">Login</button>
+  <button onclick="cadastrarUsuario(document.getElementById('email').value, document.getElementById('senha').value)">Cadastrar</button>
+</body>
+</html>

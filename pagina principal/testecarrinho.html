@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrinho</title>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+        authDomain: "drena-store.firebaseapp.com",
+        projectId: "drena-store",
+        storageBucket: "drena-store.firebasestorage.app",
+        messagingSenderId: "108887454441",
+        appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+        measurementId: "G-5Q5VQM4ELC"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Função para buscar os produtos do carrinho
+    window.buscarCarrinho = async function () {
+      const user = auth.currentUser;
+      const carrinhoDiv = document.getElementById('carrinho');
+
+      if (!user) {
+        // Caso o usuário não esteja logado, mostra a mensagem de erro
+        carrinhoDiv.innerHTML = "<p>Você precisa estar logado para ver o carrinho.</p>";
+        return;
+      }
+
+      const carrinhoRef = doc(db, "carrinhos", user.uid);
+      const carrinhoSnapshot = await getDoc(carrinhoRef);
+
+      if (carrinhoSnapshot.exists()) {
+        const produtosCarrinho = carrinhoSnapshot.data().produtos;
+
+        if (produtosCarrinho && produtosCarrinho.length > 0) {
+          produtosCarrinho.forEach(produto => {
+            const produtoDiv = document.createElement('div');
+            produtoDiv.classList.add('produto');
+
+            produtoDiv.innerHTML = `
+              <h3>${produto.nome}</h3>
+              <img src="${produto.imagem}" alt="${produto.nome}" />
+              <p>Preço: ${produto.preco}€</p>
+              <p>Cor: ${produto.cor}</p>
+              <p>Tamanho: ${produto.tamanho}</p>
+              <p>Quantidade: ${produto.quantidade}</p>
+            `;
+
+            carrinhoDiv.appendChild(produtoDiv);
+          });
+        } else {
+          carrinhoDiv.innerHTML = "<p>Seu carrinho está vazio.</p>";
+        }
+      } else {
+        carrinhoDiv.innerHTML = "<p>Carrinho não encontrado.</p>";
+      }
+    };
+
+    // Usar onAuthStateChanged para garantir que o status do usuário seja verificado
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Usuário está logado, buscar carrinho
+        buscarCarrinho();
+      } else {
+        // Usuário não está logado, mostrar mensagem
+        alert("Você precisa estar logado para acessar o carrinho.");
+        window.location.href = "testecadastro.html"; // Redirecionar para login ou cadastro
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Carrinho de Compras</h1>
+
+  <div id="carrinho">
+    <!-- Os produtos do carrinho serão exibidos aqui -->
+  </div>
+
+</body>
+</html>

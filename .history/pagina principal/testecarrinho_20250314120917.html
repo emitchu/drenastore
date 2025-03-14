@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrinho de Compras</title>
+  
+  <!-- Firebase CDN -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc, arrayRemove } from "https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js";
+
+    // Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+        authDomain: "drena-store.firebaseapp.com",
+        projectId: "drena-store",
+        storageBucket: "drena-store.firebasestorage.app",
+        messagingSenderId: "108887454441",
+        appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+        measurementId: "G-5Q5VQM4ELC"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Função para buscar produtos no carrinho do usuário
+    window.carregarCarrinho = async function () {
+      const user = auth.currentUser;
+      if (user) {
+        const carrinhoRef = doc(db, "carrinhos", user.uid);
+        const carrinhoSnap = await getDoc(carrinhoRef);
+        
+        if (carrinhoSnap.exists()) {
+          const produtos = carrinhoSnap.data().produtos;
+          const carrinhoDiv = document.getElementById("carrinho");
+          carrinhoDiv.innerHTML = ""; // Limpa a lista de produtos do carrinho
+
+          produtos.forEach(produto => {
+            const produtoDiv = document.createElement('div');
+            produtoDiv.classList.add('produto');
+            produtoDiv.innerHTML = `
+              <h3>${produto.nome}</h3>
+              <img src="${produto.imagem}" alt="${produto.nome}" />
+              <p>Preço: ${produto.preco}€</p>
+              <p>Descrição: ${produto.descricao}</p>
+              <p>Cor: ${produto.cor}</p>
+              <p>Tamanho: ${produto.tamanho}</p>
+              <button onclick="removerDoCarrinho('${produto.nome}')">Remover</button>
+            `;
+            carrinhoDiv.appendChild(produtoDiv);
+          });
+        } else {
+          document.getElementById("carrinho").innerHTML = "<p>Seu carrinho está vazio.</p>";
+        }
+      } else {
+        alert("Você precisa estar logado para ver seu carrinho.");
+      }
+    };
+
+    // Função para remover produto do carrinho
+    window.removerDoCarrinho = async function (nomeProduto) {
+      const user = auth.currentUser;
+      if (user) {
+        const carrinhoRef = doc(db, "carrinhos", user.uid);
+        try {
+          await updateDoc(carrinhoRef, {
+            produtos: arrayRemove({ nome: nomeProduto })
+          });
+          alert(`${nomeProduto} removido do carrinho!`);
+          carregarCarrinho(); // Recarrega a lista de produtos no carrinho
+        } catch (error) {
+          console.error("Erro ao remover do carrinho:", error);
+          alert("Erro ao remover o produto do carrinho.");
+        }
+      } else {
+        alert("Você precisa estar logado para remover do carrinho.");
+      }
+    };
+  </script>
+</head>
+<body onload="carregarCarrinho()">
+  <h1>Carrinho de Compras</h1>
+
+  <div id="carrinho">
+    <!-- Produtos do carrinho serão listados aqui -->
+  </div>
+  
+</body>
+</html>

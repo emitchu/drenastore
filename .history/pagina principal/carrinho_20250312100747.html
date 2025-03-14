@@ -79,10 +79,9 @@
             finalizarBtn.classList.remove("desabilitado");
             finalizarBtn.disabled = false;
 
-            carrinho.forEach((produto, index) => {
+            carrinho.forEach(produto => {
                 const produtoDiv = document.createElement("div");
                 produtoDiv.classList.add("produto-carrinho");
-                produtoDiv.setAttribute("data-id", produto.id);
 
                 const produtoImagem = document.createElement("img");
                 produtoImagem.src = produto.imagem;
@@ -132,7 +131,7 @@
                 const removerBtn = document.createElement("button");
                 removerBtn.innerText = "Remover";
                 removerBtn.onclick = function() {
-                    removerDoCarrinho(produto.id, index);
+                    removerDoCarrinho(produto.id);
                 };
                 produtoDetalhes.appendChild(removerBtn);
 
@@ -141,9 +140,9 @@
             });
         }
 
-        function removerDoCarrinho(produtoId, produtoIndex) {
+        function removerDoCarrinho(produtoId) {
             let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-            carrinho.splice(produtoIndex, 1);  // Remover o item específico (usando o índice)
+            carrinho = carrinho.filter(produto => produto.id !== produtoId);
             localStorage.setItem('carrinho', JSON.stringify(carrinho));
             exibirCarrinho();
         }

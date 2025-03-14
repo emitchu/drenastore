@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Loja Online</title>
+
+  <!-- Firebase (versão tradicional, sem módulos) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script>
+
+  <!-- Script com a lógica de cadastro/login -->
+  <script src="cadastro.js"></script>
+</head>
+<body>
+  <h1>Loja Online</h1>
+
+  <div>
+    <label for="email">E-mail:</label>
+    <input type="email" id="email" placeholder="Digite seu e-mail" required>
+  </div>
+  <div>
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" placeholder="Digite sua senha" required>
+  </div>
+  
+  <button onclick="loginUsuario()">Login</button>
+  <button onclick="cadastrarUsuario()">Cadastrar</button>
+
+  <div id="produtos">
+    <!-- Produtos serão listados aqui -->
+  </div>
+</body>
+</html>

@@ -239,7 +239,7 @@ nav ul li a:hover {
 /* Barra de pesquisa */
 .search-bar {
     position: absolute;
-    top: 87px;
+    top: 20px;
     right: 280px;
     font-size: 18px;
     padding: 12px 20px;
@@ -269,7 +269,7 @@ nav ul li a:hover {
 /* Carrinho e ícone de perfil */
 .carrinho, .perfil {
     position: absolute;
-    top: 87px;
+    top: 20px;
     font-size: 18px;
     padding: 10px 15px;
     border-radius: 5px;
