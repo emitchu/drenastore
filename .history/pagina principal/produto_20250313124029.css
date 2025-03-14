@@ -1,0 +1,330 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    cursor: url("images/rato.png"), auto;
+}
+
+/* Estilos do header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 25px;
+    height: 80px;
+    position: relative;
+}
+
+html, body {
+    height: 100%;
+    
+    flex-direction: column;
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.5;
+    padding-top: 40px; /* Adiciona o espaço entre o topo da página e o header */
+    overflow-x: hidden;
+}
+
+.logo a {
+    display: inline-block;
+}
+
+.logo img {
+    max-width: 150px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.carrinho a {
+    background-color: #000;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.carrinho a:hover {
+    background-color: #333;
+}
+
+/* Detalhes do produto */
+.produto-detalhes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.produto-detalhes h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #333;
+}
+
+.produto-detalhes img {
+    width: 100%;
+    max-width: 350px;
+    margin-bottom: 20px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.produto-detalhes img:hover {
+    transform: scale(1.05);
+}
+
+.produto-detalhes p {
+    font-size: 1.1rem;
+    color: #555;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Estilo para o select de tamanho e cor */
+.produto-tamanho,
+.produto-cor {
+    margin: 20px 0;
+    width: 100%;
+    text-align: center;
+}
+
+.produto-tamanho label,
+.produto-cor label {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 600;
+}
+
+.produto-tamanho select,
+.produto-cor select {
+    width: 200px;
+    padding: 10px;
+    font-size: 1rem;
+    color: #555;
+    background-color: #f1f1f1;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.produto-tamanho select:hover,
+.produto-cor select:hover {
+    border-color: #888;
+}
+
+.produto-tamanho select:focus,
+.produto-cor select:focus {
+    border-color: #333;
+    outline: none;
+}
+
+/* Botão adicionar ao carrinho */
+.btn-adicionar {
+    background-color: #ff9f00;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-adicionar:hover {
+    background-color: #e68900;
+}
+
+/* Produtos relacionados */
+.produtos-relacionados {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.produtos-relacionados h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.produtos-lista {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.produto-relacionado {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: calc(33.33% - 20px);
+    text-align: center;
+}
+
+.produto-relacionado img {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 10px;
+    object-fit: contain;
+}
+
+.produto-relacionado h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.produto-relacionado p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.produto-relacionado a {
+    text-decoration: none;
+    color: #ff9f00;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.produto-relacionado a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.footer {
+    background: #fff;
+    padding: 40px 20px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    margin-top: auto;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.footer-section h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li a {
+    color: #000;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.social-icons img {
+    width: 30px;
+    margin: 5px;
+    transition: transform 0.3s ease;
+}
+
+.social-icons img:hover {
+    transform: scale(1.2);
+}
+
+.copyright {
+    font-size: 12px;
+    color: #777;
+    margin-top: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .produto-detalhes {
+        padding: 15px;
+    }
+
+    .produto-detalhes h1 {
+        font-size: 1.8rem;
+    }
+
+    .produto-detalhes img {
+        max-width: 300px;
+    }
+
+    .produtos-lista {
+        flex-direction: column;
+    }
+
+    .produto-relacionado {
+        width: 100%;
+    }
+}
+
+
+
+/* Estilo da tela de carregamento */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8); /* Fundo translúcido */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease-out;
+}
+
+/* Esconde a tela de carregamento quando a página é carregada */
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Estilo para o modelo 3D (na tela de carregamento) */
+#modelo2 {
+    position: absolute;
+    top: 50%;
+    left: 85%;
+    transform: translate(-50%, -50%);
+    width: 80%; /* Reduz o tamanho do modelo na loading screen */
+    height: auto;
+}
+
+/* Estilo para o conteúdo da página (incluindo o modelo 3D final) */
+#content {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease-in-out;
+}
+
+/* Quando a página carrega, o conteúdo se torna visível */
+body.loaded #content {
+    visibility: visible;
+    opacity: 1;
+}
+
+

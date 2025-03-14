@@ -1,0 +1,97 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+<link rel="stylesheet" href="teste.css"> 
+
+
+
+<header>
+    <div class="logo">
+        <div id="logo3d-container"><script>
+            window.onload = function () {
+                let scene, camera, renderer, controls;
+        
+                function init() {
+                    scene = new THREE.Scene();
+                    scene.background = new THREE.Color(0xdddddd);
+        
+                    // Aumentando a distância mínima de visão para evitar que o objeto desapareça
+                    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 10, 5000);  // Ajustando o "near" para 10 e "far" para 5000
+                    camera.position.set(0, 0, 1100);  // Câmera um pouco afastada para começar
+        
+                    // Orientando a câmera para olhar para o centro da cena (onde o modelo estará)
+                    camera.lookAt(new THREE.Vector3(0, 0, 0));  // Garantindo que a câmera está olhando para o modelo
+        
+                    // Luz ambiente suave
+                    const hlight = new THREE.AmbientLight(0x404040, 2);  // Luz suave
+                    scene.add(hlight);
+        
+                    // Luz direcional para destacar o modelo
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Luz branca, intensidade 1
+                    directionalLight.position.set(5, 5, 5);  // Colocando a luz em uma posição distante
+                    scene.add(directionalLight);
+        
+                    // Luz pontual para maior destaque
+                    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+                    pointLight.position.set(0, 0, 10);  // Posicionando a luz
+                    scene.add(pointLight);
+        
+                    // Criar o renderer e ajustar seu tamanho
+                    renderer = new THREE.WebGLRenderer({ antialias: true });
+                    renderer.setSize(300, 250);  // Ajustando o tamanho para 300x250, conforme definido no CSS
+        
+                    // Adicionando o canvas ao corpo da página
+                    document.getElementById('logo3d-container').appendChild(renderer.domElement);  // Agora a cena vai dentro da div 'logo3d-container'
+        
+                    // Adicionando o OrbitControls para controlar a visualização com o mouse
+                    controls = new THREE.OrbitControls(camera, renderer.domElement);
+        
+                    // Definindo limites para a distância da câmera
+                    controls.minDistance = 100;  // Distância mínima
+                    controls.maxDistance = 2000; // Distância máxima
+        
+                    const loader = new THREE.OBJLoader();
+                    loader.load('cuzin.obj', function (obj) {
+                        console.log("Modelo carregado:", obj);
+        
+                        // Criação de material preto para o objeto
+                        const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        
+                        // Aplicando o material no modelo
+                        obj.traverse(function (child) {
+                            if (child.isMesh) child.material = blackMaterial;  // Garantindo que todas as partes do modelo usem o material preto
+                        });
+        
+                        // Ajustando a escala e a posição do modelo
+                        obj.scale.set(5, 5, 5);  // Ajuste a escala conforme necessário
+                        obj.position.set(0, 2, 0);  // Subindo um pouco o modelo para dentro da cena (ajustado para -2 -> 2)
+        
+                        // Girando o modelo para que ele fique de frente
+                        obj.rotation.x = Math.PI / 7;  // Rotaciona 90 graus no eixo X
+                        obj.rotation.y = 0;  // Mantém a rotação no eixo Y
+                        obj.rotation.z = 0;  // Mantém a rotação no eixo Z
+        
+                        // Adicionando o modelo à cena
+                        scene.add(obj);
+        
+                        animate();
+                    }, undefined, function (error) {
+                        console.error("Erro ao carregar o modelo:", error);
+                    });
+                }
+        
+                function animate() {
+                    requestAnimationFrame(animate);
+                    controls.update(); // Atualiza os controles do OrbitControls
+                    renderer.render(scene, camera);
+                }
+        
+                init();
+            };
+        </script></div>
+    </div>
+    <div id="texto-container">
+        <p>Escreva aqui seu texto explicativo ou informativo!</p>
+    </div>
+</header>

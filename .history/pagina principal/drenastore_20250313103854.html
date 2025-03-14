@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drena Store - Exemplo</title>
+    <meta name="description" content="Loja online de produtos incríveis. Confira nossa coleção e encontre a peça perfeita para você.">
+    <link rel="stylesheet" href="styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="searchbar.js"></script>
+    
+
+    
+
+
+
+    <script>
+    window.onload = function () {
+        let scene, camera, renderer, controls;
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xdddddd);
+
+            // Aumentando a distância mínima de visão para evitar que o objeto desapareça
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 10, 5000);  // Ajustando o "near" para 10 e "far" para 5000
+            camera.position.set(0, 0, 1100);  // Câmera um pouco afastada para começar
+
+            // Orientando a câmera para olhar para o centro da cena (onde o modelo estará)
+            camera.lookAt(new THREE.Vector3(0, 0, 0));  // Garantindo que a câmera está olhando para o modelo
+
+            // Luz ambiente suave
+            const hlight = new THREE.AmbientLight(0x404040, 2);  // Luz suave
+            scene.add(hlight);
+
+            // Luz direcional para destacar o modelo
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Luz branca, intensidade 1
+            directionalLight.position.set(5, 5, 5);  // Colocando a luz em uma posição distante
+            scene.add(directionalLight);
+
+            // Luz pontual para maior destaque
+            const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+            pointLight.position.set(0, 0, 10);  // Posicionando a luz
+            scene.add(pointLight);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // Adicionando o canvas ao corpo da página
+            document.body.appendChild(renderer.domElement);
+
+            // Adicionando o OrbitControls para controlar a visualização com o mouse
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+            // Definindo limites para a distância da câmera
+            controls.minDistance = 100;  // Distância mínima
+            controls.maxDistance = 2000; // Distância máxima
+
+            const loader = new THREE.OBJLoader();
+            loader.load('cuzin.obj', function (obj) {
+                console.log("Modelo carregado:", obj);
+
+                // Criação de material preto para o objeto
+                const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+
+                // Aplicando o material no modelo
+                obj.traverse(function (child) {
+                    if (child.isMesh) child.material = blackMaterial;  // Garantindo que todas as partes do modelo usem o material preto
+                });
+
+                // Ajustando a escala e a posição do modelo
+                obj.scale.set(5, 5, 5);  // Ajuste a escala conforme necessário
+                obj.position.set(0, -2, 0);  // Ajustando a posição do modelo para não ficar sobre a câmera
+
+                // Girando o modelo para que ele fique de frente
+                obj.rotation.x = Math.PI / 7;  // Rotaciona 90 graus no eixo X
+                obj.rotation.y = 0;  // Mantém a rotação no eixo Y
+                obj.rotation.z = 0;  // Mantém a rotação no eixo Z
+
+                // Adicionando o modelo à cena
+                scene.add(obj);
+
+                animate();
+            }, undefined, function (error) {
+                console.error("Erro ao carregar o modelo:", error);
+            });
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // Atualiza os controles do OrbitControls
+            renderer.render(scene, camera);
+        }
+
+        init();
+    };
+</script>
+
+    <script type="module">
+        // Importando as bibliotecas do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+            authDomain: "drena-store.firebaseapp.com",
+            projectId: "drena-store",
+            storageBucket: "drena-store.firebasestorage.app",
+            messagingSenderId: "108887454441",
+            appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+            measurementId: "G-5Q5VQM4ELC"
+        };
+
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para carregar os produtos
+        async function carregarProdutos() {
+            const produtosRef = collection(db, "produtos");
+            try {
+                const snapshot = await getDocs(produtosRef);
+                console.log("Consulta realizada com sucesso!");
+
+                if (snapshot.empty) {
+                    console.log("Nenhum produto encontrado.");
+                    return;
+                }
+
+                const produtosLista = document.getElementById("produtos-lista");
+                snapshot.forEach((doc) => {
+                    const produto = doc.data();
+                    console.log(produto); // Logando os dados do produto
+
+                    const produtoDiv = document.createElement("div");
+                    produtoDiv.classList.add("produto");
+
+                    // Adicionando informações do produto
+                    produtoDiv.innerHTML = `
+                        <section class="produtos-container">
+                            <div class="grid-produtos">
+                                <div class="produto">
+                                    <a href="produto.html?id=${doc.id}" class="produto-link">
+                                        <img src="${produto.imagem}" class="imagem-frente">
+                                        <div class="descricao-produto">
+                                            <p class="nome">${produto.nome}</p>
+                                            <p class="preco">${produto.preco}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <img src="C:/Users/emanu/Desktop/store/drena.store/images/partetras.png" class="imagem-costas">
+                        </section>
+                    `;
+
+                    produtosLista.appendChild(produtoDiv);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar produtos:", error);
+            }
+        }
+
+        // Chama a função para carregar os produtos ao carregar a página
+        window.onload = carregarProdutos;
+    </script>
+    
+    
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <div id="logo3d-container"><script>
+            window.onload = function () {
+                let scene, camera, renderer, controls;
+        
+                function init() {
+                    scene = new THREE.Scene();
+                    scene.background = new THREE.Color(0xdddddd);
+        
+                    // Aumentando a distância mínima de visão para evitar que o objeto desapareça
+                    camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 10, 5000);  // Ajustando o "near" para 10 e "far" para 5000
+                    camera.position.set(0, 0, 1100);  // Câmera um pouco afastada para começar
+        
+                    // Orientando a câmera para olhar para o centro da cena (onde o modelo estará)
+                    camera.lookAt(new THREE.Vector3(0, 0, 0));  // Garantindo que a câmera está olhando para o modelo
+        
+                    // Luz ambiente suave
+                    const hlight = new THREE.AmbientLight(0x404040, 2);  // Luz suave
+                    scene.add(hlight);
+        
+                    // Luz direcional para destacar o modelo
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);  // Luz branca, intensidade 1
+                    directionalLight.position.set(5, 5, 5);  // Colocando a luz em uma posição distante
+                    scene.add(directionalLight);
+        
+                    // Luz pontual para maior destaque
+                    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+                    pointLight.position.set(0, 0, 10);  // Posicionando a luz
+                    scene.add(pointLight);
+        
+                    // Criar o renderer e ajustar seu tamanho
+                    renderer = new THREE.WebGLRenderer({ antialias: true });
+                    renderer.setSize(300, 250);  // Ajustando o tamanho para 300x250, conforme definido no CSS
+        
+                    // Adicionando o canvas ao corpo da página
+                    document.getElementById('logo3d-container').appendChild(renderer.domElement);  // Agora a cena vai dentro da div 'logo3d-container'
+        
+                    // Adicionando o OrbitControls para controlar a visualização com o mouse
+                    controls = new THREE.OrbitControls(camera, renderer.domElement);
+        
+                    // Definindo limites para a distância da câmera
+                    controls.minDistance = 100;  // Distância mínima
+                    controls.maxDistance = 2000; // Distância máxima
+        
+                    const loader = new THREE.OBJLoader();
+                    loader.load('cuzin.obj', function (obj) {
+                        console.log("Modelo carregado:", obj);
+        
+                        // Criação de material preto para o objeto
+                        const blackMaterial = new THREE.MeshStandardMaterial({ color: 0x000000 });
+        
+                        // Aplicando o material no modelo
+                        obj.traverse(function (child) {
+                            if (child.isMesh) child.material = blackMaterial;  // Garantindo que todas as partes do modelo usem o material preto
+                        });
+        
+                        // Ajustando a escala e a posição do modelo
+                        obj.scale.set(5, 5, 5);  // Ajuste a escala conforme necessário
+                        obj.position.set(0, 2, 0);  // Subindo um pouco o modelo para dentro da cena (ajustado para -2 -> 2)
+        
+                        // Girando o modelo para que ele fique de frente
+                        obj.rotation.x = Math.PI / 7;  // Rotaciona 90 graus no eixo X
+                        obj.rotation.y = 0;  // Mantém a rotação no eixo Y
+                        obj.rotation.z = 0;  // Mantém a rotação no eixo Z
+        
+                        // Adicionando o modelo à cena
+                        scene.add(obj);
+        
+                        animate();
+                    }, undefined, function (error) {
+                        console.error("Erro ao carregar o modelo:", error);
+                    });
+                }
+        
+                function animate() {
+                    requestAnimationFrame(animate);
+                    controls.update(); // Atualiza os controles do OrbitControls
+                    renderer.render(scene, camera);
+                }
+        
+                init();
+            };
+        </script></div>
+        </div>
+
+        <div class="perfil">
+    <a href="login.html">
+        <button>
+            <img src="images/icon-perfil.png" alt="Perfil" class="icone-perfil">
+        </button>
+    </a>
+</div>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Pesquisar produtos..." onkeyup="searchProducts()">
+        </div>
+
+        <div class="carrinho">
+            <button onclick="window.location.href='carrinho.html'">Carrinho</button>
+        </div>
+    </header>
+
+    <div id="produtos-lista"></div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="logo-footer.png" alt="Logo da Loja" class="footer-logo">
+            </div>
+            <div class="footer-section">
+                <h3>Informações</h3>
+                <ul>
+                    <li><a href="#">Sobre Nós</a></li>
+                    <li><a href="#">Contato</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Serviço</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/emadrenado" target="_blank">
+                        <i class="fa fa-instagram" style="font-size:36px"></i>
+                    </a>
+                    <a href="https://www.youtube.com/emadrenado" target="_blank">
+                        <i class="fa fa-youtube-play" style="font-size:36px"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/emadrenado" target="_blank">
+                        <img src="tiktok.svg" alt="TikTok">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2024 Emadrenado. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

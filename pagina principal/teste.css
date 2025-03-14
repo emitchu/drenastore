@@ -1,0 +1,27 @@
+/* Teste.css */
+
+/* Garantir que o header ocupe o espaço necessário */
+
+
+.logo {
+   
+    float: left;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 250px;  /* Tamanho ajustado da cena 3D */
+}
+
+#logo3d-container {
+    display: block; 
+    width: 100px; /* Diminuindo a largura */
+    height: 100px; /* Diminuindo a altura para deixar mais espaço acima */
+    margin-bottom: 0;  /* Retirando a margem inferior */
+}
+
+#texto-container{
+    justify-content: center;
+}
+
+
+

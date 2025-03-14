@@ -1,0 +1,110 @@
+/* Resetando algumas configurações */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Estilo geral do body */
+body {
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* Container principal do login */
+.login-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+/* Título */
+h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Formulários */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+input[type="email"], input[type="password"] {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #888;
+    outline: none;
+}
+
+button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #333;
+}
+
+/* Estilo para o botão de criar conta */
+#create-account-btn {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 5px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+}
+
+#create-account-btn:hover {
+    background-color: #45a049;
+}
+
+/* Formulário de criação de conta */
+#signup-form-container {
+    margin-top: 20px;
+    display: none;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-container {
+        padding: 20px;
+        width: 100%;
+        max-width: 90%;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+    
+    input[type="email"], input[type="password"], button {
+        font-size: 14px;
+    }
+}

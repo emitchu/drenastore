@@ -1,0 +1,352 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    cursor: url("images/rato.png"), auto;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    color: #000000;
+    line-height: 1.6;
+    padding-top: 20px; /* Adiciona o espaço entre o topo da página e o header */
+    overflow-x: hidden;
+}
+
+main {
+    flex: 1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 10px 20px;
+    height: 80px;
+    margin-top: 15px;
+    position: relative;
+}
+
+.section {
+    width: 300px;
+    height: 500px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-top: 20px;
+    box-shadow: 4px 4px black;
+  }
+
+  .sectionText {
+    font-family: 'Epilogue', sans-serif;
+    color: white;
+    margin: 1.5em 0.5em;
+  }
+
+nav {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* Centraliza as categorias */
+    flex-grow: 1; /* Permite que o nav ocupe o espaço restante */
+    margin-right: auto;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: 0.3s;
+}
+
+nav ul li a:hover {
+    color: #888888;
+}
+
+#produtos-lista {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os produtos se movam para a próxima linha caso o espaço não seja suficiente */
+    justify-content: flex-start; /* Espaça os itens uniformemente */
+    gap: 20px; /* Espaço entre os produtos */
+    margin: 0 auto; /* Centraliza a lista */
+    padding: 20px; /* Adiciona algum padding para evitar que os produtos fiquem colados nas bordas */
+    height: 10px;
+}
+
+.grid-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajusta os itens para se adaptarem ao tamanho da tela */
+    gap: 20px; /* Espaçamento entre os produtos */
+    min-height: 400px;
+}
+
+
+.produto {
+    position: relative;
+    width: 300px;
+    height: 400px;
+    margin: 5px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Organiza o conteúdo verticalmente */
+    justify-content: space-between;
+}
+
+.produto img {
+    width: 100%;
+    height: auto; /* Ajusta a altura para manter a proporção da imagem */
+    object-fit: contain;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.descricao-produto {
+    position: absolute;
+    left: 50%; /* Coloca no meio horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta para o centro exato */
+    padding: 20px; /* Aumenta o padding para mais espaço ao redor do conteúdo */
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8); /* Fundo translúcido */
+    border-radius: 5px;
+    z-index: 10;
+    width: 80%; /* Garante que a descrição não ocupe 100% da largura do contêiner */
+}
+
+
+.produto .nome {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+
+.produto .preco {
+    font-size: 16px;
+    color: #000;
+}
+
+.produto:hover .imagem-frente {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.produto:hover .imagem-costas {
+    opacity: 1;
+    transform: scale(1.01);
+}
+
+.footer {
+    background: #ffffff;
+    color: #000000;
+    padding: 40px 20px;
+    text-align: center;
+    margin-top: auto;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px; /* Adiciona padding ao redor de todo o container do footer */
+}
+
+.footer-section {
+    padding: 20px; /* Adiciona mais espaçamento interno às seções do footer */
+}
+
+.footer-section h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.footer-section ul {
+    list-style: none;
+}
+
+.footer-section ul li a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.social-icons img {
+    width: 30px;
+    margin: 5px;
+    transition: transform 0.3s;
+}
+
+.social-icons img:hover {
+    transform: scale(1.2);
+}
+
+.newsletter-form input {
+    padding: 8px;
+    width: 70%;
+    margin-bottom: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}
+
+.newsletter-form button {
+    padding: 8px 15px;
+    background: #000000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.newsletter-form button:hover {
+    background: #333333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/*para estar bem em todos os dispositivos*/
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+    }
+    .carrinho {
+        top: 50px; /* Ajuste o valor do top para ficar bem posicionado em telas pequenas */
+        right: 20px;
+    }
+}
+
+#model {
+    position: absolute;
+    top: -20px; /* Ajuste da posição vertical */
+    left: 20px; /* Ajuste da posição horizontal */
+    width: 600px; /* Ajuste o tamanho do canvas conforme necessário */
+    height: 600px; /* Ajuste o tamanho do canvas conforme necessário */
+    z-index: 9999; /* Um z-index menor para garantir que o modelo fique atrás dos elementos interativos */
+    pointer-events: none; /* Evita que o canvas bloqueie os cliques */
+}
+
+.carrinho {
+  position: absolute;
+    top: 20px;
+    right: 80px;
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 10; /* Garante que o carrinho esteja na frente */
+}
+
+.carrinho button {
+    background-color: #000000; /* Cor de fundo preta */
+    color: #ffffff; /* Cor do texto branca */
+    font-size: 16px; /* Tamanho da fonte */
+    padding: 12px 20px; /* Padding para dar mais espaçamento */
+    border: none; /* Sem borda */
+    border-radius: 50px; /* Borda arredondada */
+    cursor: pointer; /* Cursor de mão para indicar que é clicável */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transições suaves */
+}
+
+.carrinho button:hover {
+    background-color: #333333; /* Cor de fundo mais clara no hover */
+    transform: scale(1.1); /* Aumenta o botão quando passar o mouse */
+}
+
+.carrinho button:active {
+    transform: scale(1); /* Deixa o botão com o tamanho original ao clicar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduz a sombra ao clicar */
+}
+
+
+/* Estilo para a barra de pesquisa */
+.search-bar {
+    position: absolute;
+    top: 20px;
+    right: 400px; /* Um pouco à esquerda do carrinho */
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.search-bar input {
+    width: 300px; /* Ajuste a largura conforme necessário */
+    padding: 11px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    outline: none;
+    transition: width 0.3s ease;
+}
+
+.search-bar input:focus {
+    width: 300px; /* Expande a barra de pesquisa quando em foco */
+    border-color: #888888;
+}
+
+.search-bar input::placeholder {
+    color: #888888;
+}
+
+
+/* Posição do carrinho */
+.carrinho {
+    position: absolute;
+    top: 20px;
+    right: 280px; /* Ajuste a posição do carrinho para dar espaço ao ícone de perfil */
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 10; /* Garante que o carrinho esteja na frente */
+}
+
+/* Posição do ícone de perfil */
+.perfil {
+    position: absolute;
+    top: 20px;
+    right: 1600px; /* Coloca o ícone de perfil à direita do carrinho */
+    font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 10; /* Garante que o ícone de perfil esteja na frente */
+}
+
+.perfil button {
+    background-color: #000000; /* Cor de fundo preta */
+    color: #ffffff; /* Cor do ícone */
+    font-size: 16px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 50%; /* Bordas arredondadas */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.perfil button:hover {
+    background-color: #333333; /* Cor de fundo mais clara no hover */
+    transform: scale(1.1); /* Aumenta o botão quando passar o mouse */
+}
+
+.perfil button:active {
+    transform: scale(1); /* Deixa o botão com o tamanho original ao clicar */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Reduz a sombra ao clicar */
+}
+
+.icone-perfil {
+    width: 24px; /* Tamanho do ícone */
+    height: auto;
+}

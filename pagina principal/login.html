@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DrenaStore</title>
+    <link rel="stylesheet" href="login.css">
+    <!-- Importar Firebase com type="module" -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+        // Sua configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+            authDomain: "drena-store.firebaseapp.com",
+            projectId: "drena-store",
+            storageBucket: "drena-store.firebasestorage.app",
+            messagingSenderId: "108887454441",
+            appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+            measurementId: "G-5Q5VQM4ELC"
+        };
+
+        // Inicializar o Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Referências aos elementos da interface
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const signupFormContainer = document.getElementById('signup-form-container');
+        const createAccountBtn = document.getElementById('create-account-btn');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+
+        // Exibir o formulário de criação de conta
+        // Exibir o formulário de criação de conta
+createAccountBtn.addEventListener('click', () => {
+    signupFormContainer.style.display = 'block'; // Exibe o formulário de criação de conta
+    loginForm.style.display = 'none';            // Esconde o formulário de login
+    createAccountBtn.style.display = 'none';     // Esconde o botão "Criar Conta" no topo
+});
+
+// Exibir novamente o formulário de login e o botão "Criar Conta"
+signupBtn.addEventListener('click', () => {
+    signupFormContainer.style.display = 'none';  // Esconde o formulário de criação de conta
+    loginForm.style.display = 'block';           // Exibe o formulário de login
+    createAccountBtn.style.display = 'block';   // Exibe novamente o botão "Criar Conta"
+});
+
+        // Login do usuário
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    alert("Login bem-sucedido!");
+                    window.location.href = "drenastore.html"; // Redirecionar para a página principal
+                })
+                .catch((error) => {
+                    alert("Erro ao fazer login: " + error.message);
+                    console.error("Erro ao fazer login: ", error);
+                });
+        });
+
+        // Criação de conta
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (email && password) {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        alert("Conta criada com sucesso!");
+                        window.location.href = "drenastore.html"; // Redirecionar para a página principal
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        alert("Erro ao criar conta: " + errorMessage);
+                        console.error("Erro ao criar conta: ", errorCode, errorMessage);
+                    });
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login ou Criação de Conta</h2>
+        <form id="login-form">
+            <input type="email" id="email" placeholder="Digite seu e-mail" required>
+            <input type="password" id="password" placeholder="Digite sua senha" required>
+            <button type="submit" id="login-btn">Login</button>
+        </form>
+        <button id="create-account-btn">Criar Conta</button>
+        
+        <div id="signup-form-container" style="display:none;">
+            <h3>Crie sua Conta</h3>
+            <form id="signup-form">
+                <input type="email" id="signup-email" placeholder="Digite seu e-mail" required>
+                <input type="password" id="signup-password" placeholder="Digite sua senha" required>
+                <button type="submit" id="signup-btn">Criar Conta</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

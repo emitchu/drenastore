@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto</title>
+    <link rel="stylesheet" href="produto.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+
+
+
+
+    
+    <script type="module">
+        // Importando as bibliotecas do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.14.0/firebase-firestore.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWLVnBlGSwbLsat8U9wfFjbPQRD5qRKhI",
+            authDomain: "drena-store.firebaseapp.com",
+            projectId: "drena-store",
+            storageBucket: "drena-store.firebasestorage.app",
+            messagingSenderId: "108887454441",
+            appId: "1:108887454441:web:aa58b5166ef77df66e3678",
+            measurementId: "G-5Q5VQM4ELC"
+        };
+
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para carregar as informações do produto específico
+        async function carregarProduto() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const produtoId = urlParams.get('id');
+            const produtoRef = doc(db, "produtos", produtoId);
+
+            try {
+                const produtoDoc = await getDoc(produtoRef);
+
+                if (produtoDoc.exists()) {
+                    const produto = produtoDoc.data();
+                    console.log(produto);
+
+                    // Exibindo as informações do produto
+                    document.getElementById("produto-imagem").src = produto.imagem;
+                    document.getElementById("produto-nome").innerText = produto.nome;
+                    document.getElementById("produto-descricao").innerText = produto.descricao;
+                    document.getElementById("produto-preco").innerText = "R$ " + produto.preco;
+                    
+                    // Carregar tamanhos
+                    const tamanhoSelect = document.getElementById("produto-tamanho");
+                    produto.tamanho.forEach(tamanho => {
+                        const option = document.createElement("option");
+                        option.value = tamanho;
+                        option.innerText = tamanho;
+                        tamanhoSelect.appendChild(option);
+                    });
+
+                    // Carregar cores
+                    const corSelect = document.getElementById("produto-cor");
+                    ["Branco", "Preto"].forEach(cor => {
+                        const option = document.createElement("option");
+                        option.value = cor;
+                        option.innerText = cor;
+                        corSelect.appendChild(option);
+                    });
+
+                    // Carregar produtos relacionados
+                    carregarProdutosRelacionados(produto.categoria);
+                } else {
+                    console.log("Nenhum produto encontrado!");
+                }
+            } catch (error) {
+                console.error("Erro ao carregar o produto:", error);
+            }
+        }
+
+        // Função para carregar produtos relacionados
+        async function carregarProdutosRelacionados(categoria) {
+            const produtosRef = collection(db, "produtos");
+            const produtosSnapshot = await getDocs(produtosRef);
+            const produtosRelacionados = [];
+
+            produtosSnapshot.forEach(doc => {
+                const produto = doc.data();
+                if (produto.categoria === categoria) {
+                    produtosRelacionados.push(produto);
+                }
+            });
+
+            // Exibir produtos relacionados
+            const relacionadosContainer = document.getElementById("produtos-relacionados");
+            relacionadosContainer.innerHTML = '';  // Limpar produtos anteriores
+
+            produtosRelacionados.forEach(produto => {
+                const produtoElement = document.createElement("div");
+                produtoElement.classList.add("produto-relacionado");
+
+                produtoElement.innerHTML = `
+                    <img src="${produto.imagem}" alt="${produto.nome}">
+                    <h3>${produto.nome}</h3>
+                    <p>R$ ${produto.preco}</p>
+                    <a href="produto.html?id=${produto.id}">Ver Detalhes</a>
+                `;
+
+                relacionadosContainer.appendChild(produtoElement);
+            });
+        }
+
+        // Função para adicionar o produto ao carrinho
+        function adicionarAoCarrinho() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const produtoId = urlParams.get('id');
+            const produtoNome = document.getElementById("produto-nome").innerText;
+            const produtoImagem = document.getElementById("produto-imagem").src;
+            const produtoPreco = document.getElementById("produto-preco").innerText.replace("R$ ", "").trim();
+            const corSelecionada = document.getElementById("produto-cor").value;
+            const tamanhoSelecionado = document.getElementById("produto-tamanho").value;
+            const quantidadeSelecionada = document.getElementById("produto-quantidade").value;
+
+            // Validando se a quantidade é um número válido
+            if (quantidadeSelecionada <= 0 || isNaN(quantidadeSelecionada)) {
+                alert("Por favor, insira uma quantidade válida.");
+                return;
+            }
+
+            if (!tamanhoSelecionado) {
+                alert("Por favor, selecione um tamanho.");
+                return;
+            }
+
+            if (!corSelecionada) {
+                alert("Por favor, selecione uma cor.");
+                return;
+            }
+
+            const produto = {
+                id: produtoId,
+                nome: produtoNome,
+                imagem: produtoImagem,
+                preco: produtoPreco,
+                tamanho: tamanhoSelecionado,
+                cor: corSelecionada,
+                quantidade: quantidadeSelecionada
+            };
+
+            // Adicionar ou atualizar o carrinho
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+            const produtoExistente = carrinho.find(item => item.id === produtoId && item.tamanho === tamanhoSelecionado && item.cor === corSelecionada);
+            
+            if (produtoExistente) {
+                // Se o produto já existe no carrinho, atualizamos a quantidade
+                produtoExistente.quantidade = parseInt(produtoExistente.quantidade) + parseInt(quantidadeSelecionada);
+            } else {
+                // Se o produto não existe, adicionamos o produto
+                carrinho.push(produto);
+            }
+
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+
+            alert("Produto adicionado ao carrinho!");
+        }
+
+        // Chama a função para carregar o produto
+        window.onload = () => {
+            carregarProduto();
+
+            const btnAdicionarCarrinho = document.getElementById("adicionar-carrinho");
+            if (btnAdicionarCarrinho) {
+                btnAdicionarCarrinho.addEventListener("click", adicionarAoCarrinho);
+            }
+        };
+    </script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <a href="drenastore.html"></a>
+            <img src="drenaespelhadoprovideo1.png" alt="Logo da Drena Store">
+        </div>
+        <div class="carrinho">
+            <a href="carrinho.html">Carrinho</a>
+        </div>
+    </header>
+
+    <div class="produto-detalhes">
+        <h1 id="produto-nome">Nome do Produto</h1>
+        <img id="produto-imagem" src="" alt="Imagem do Produto">
+        <p id="produto-descricao">Descrição do Produto</p>
+        <p id="produto-preco">Preço</p>
+
+        <label for="produto-tamanho">Escolha o Tamanho:</label>
+        <select id="produto-tamanho"></select>
+
+        <label for="produto-cor">Escolha a Cor:</label>
+        <select id="produto-cor"></select>
+
+        <label for="produto-quantidade">Escolha a Quantidade:</label>
+        <input type="number" id="produto-quantidade" value="1" min="1" step="1">
+
+        <button id="adicionar-carrinho">Adicionar ao Carrinho</button>
+    </div>
+
+    <!-- Produtos Relacionados -->
+    <div class="produtos-relacionados">
+        <h2>Produtos Relacionados</h2>
+        <div id="produtos-relacionados" class="produtos-lista"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="logo-footer.png" alt="Logo da Loja" class="footer-logo">
+            </div>
+            <div class="footer-section">
+                <h3>Informações</h3>
+                <ul>
+                    <li><a href="#">Sobre Nós</a></li>
+                    <li><a href="#">Contato</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Serviço</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <div

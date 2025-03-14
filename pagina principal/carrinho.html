@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <link rel="stylesheet" href="carrinho.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <a href="drenastore.html">
+                <img src="drenaespelhadoprovideo1.png" alt="Logo da Drena Store">
+            </a>
+        </div>
+        <div class="carrinho">
+            <a href="drenastore.html">Voltar à Loja</a>
+        </div>
+    </header>
+
+    <div id="carrinho-container"></div>
+
+    <div class="checkout-container" style="text-align: center; margin-top: 20px;">
+        <button id="finalizar-compra-btn" class="btn-finalizar">
+            Finalizar Compra
+        </button>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <img src="logo-footer.png" alt="Logo da Loja" class="footer-logo">
+            </div>
+            <div class="footer-section">
+                <h3>Informações</h3>
+                <ul>
+                    <li><a href="#">Sobre Nós</a></li>
+                    <li><a href="#">Contato</a></li>
+                    <li><a href="#">Política de Privacidade</a></li>
+                    <li><a href="#">Termos de Serviço</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/" target="_blank">
+                        <i class="fa fa-instagram" style="font-size:36px"></i>
+                    </a>
+                    <a href="https://www.youtube.com/" target="_blank">
+                        <i class="fa fa-youtube-play" style="font-size:36px"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/" target="_blank">
+                        <img src="tiktok.svg" alt="TikTok">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2024 Emadrenado. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        function exibirCarrinho() {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const carrinhoContainer = document.getElementById("carrinho-container");
+            const finalizarBtn = document.getElementById("finalizar-compra-btn");
+
+            if (carrinho.length === 0) {
+                carrinhoContainer.innerHTML = "<p>O carrinho está vazio.</p>";
+                finalizarBtn.classList.add("desabilitado");
+                finalizarBtn.disabled = true;
+                return;
+            }
+
+            carrinhoContainer.innerHTML = '';
+            finalizarBtn.classList.remove("desabilitado");
+            finalizarBtn.disabled = false;
+
+            carrinho.forEach(produto => {
+                const produtoDiv = document.createElement("div");
+                produtoDiv.classList.add("produto-carrinho");
+
+                const produtoImagem = document.createElement("img");
+                produtoImagem.src = produto.imagem;
+                produtoImagem.alt = produto.nome;
+                produtoImagem.classList.add("imagem-produto");
+                produtoDiv.appendChild(produtoImagem);
+
+                const produtoDetalhes = document.createElement("div");
+                produtoDetalhes.classList.add("detalhes-produto");
+
+                const produtoNome = document.createElement("p");
+                produtoNome.innerText = produto.nome;
+                produtoDetalhes.appendChild(produtoNome);
+
+                const produtoCor = document.createElement("p");
+                produtoCor.innerText = "Cor: " + produto.cor;
+                produtoDetalhes.appendChild(produtoCor);
+
+                const produtoTamanho = document.createElement("p");
+                produtoTamanho.innerText = "Tamanho: " + produto.tamanho;
+                produtoDetalhes.appendChild(produtoTamanho);
+
+                const produtoPreco = document.createElement("p");
+                produtoPreco.innerText = "€ " + produto.preco;
+                produtoDetalhes.appendChild(produtoPreco);
+
+                const quantidadeLabel = document.createElement("label");
+                quantidadeLabel.innerText = "Quantidade:";
+                const quantidadeSelect = document.createElement("select");
+                for (let i = 1; i <= produto.quantidade; i++) {
+                    const option = document.createElement("option");
+                    option.value = i;
+                    option.innerText = i;
+                    if (i === produto.quantidadeSelecionada) {
+                        option.selected = true;
+                    }
+                    quantidadeSelect.appendChild(option);
+                }
+                produtoDetalhes.appendChild(quantidadeLabel);
+                produtoDetalhes.appendChild(quantidadeSelect);
+
+                quantidadeSelect.addEventListener("change", function() {
+                    produto.quantidadeSelecionada = parseInt(quantidadeSelect.value);
+                    atualizarCarrinho(produto.id, produto.quantidadeSelecionada);
+                });
+
+                const removerBtn = document.createElement("button");
+                removerBtn.innerText = "Remover";
+                removerBtn.onclick = function() {
+                    removerDoCarrinho(produto.id);
+                };
+                produtoDetalhes.appendChild(removerBtn);
+
+                produtoDiv.appendChild(produtoDetalhes);
+                carrinhoContainer.appendChild(produtoDiv);
+            });
+        }
+
+        function removerDoCarrinho(produtoId) {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            carrinho = carrinho.filter(produto => produto.id !== produtoId);
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            exibirCarrinho();
+        }
+
+        function atualizarCarrinho(produtoId, novaQuantidade) {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            const produtoIndex = carrinho.findIndex(produto => produto.id === produtoId);
+            if (produtoIndex > -1) {
+                carrinho[produtoIndex].quantidadeSelecionada = novaQuantidade;
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                exibirCarrinho();
+            }
+        }
+
+        function verificarCarrinhoAntesDeFinalizar() {
+            let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+            if (carrinho.length === 0) {
+                alert("Seu carrinho está vazio! Adicione produtos antes de finalizar a compra.");
+                return false;
+            }
+            return true;
+        }
+
+        window.onload = function() {
+            exibirCarrinho();
+
+            const finalizarBtn = document.getElementById("finalizar-compra-btn");
+            finalizarBtn.onclick = function() {
+                if (verificarCarrinhoAntesDeFinalizar()) {
+                    window.location.href = 'checkout.html';
+                }
+            };
+        };
+    </script>
+</body>
+</html>
